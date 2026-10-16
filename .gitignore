@@ -1,0 +1,16 @@
+# 数据（含用户账号、密码哈希、聊天记录 —— 绝对不能提交）
+data/
+
+# 日志
+*.log
+
+# 临时调试脚本
+_check.js
+_verify.js
+
+# 备份
+*.bak-*
+
+# 系统文件
+.DS_Store
+Thumbs.db

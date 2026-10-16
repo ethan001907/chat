@@ -1,0 +1,21 @@
+{
+  "name": "chat-app",
+  "version": "1.0.0",
+  "description": "智能聊天 —— 类微信的零依赖聊天应用（注册/登录、好友、单聊、群聊、WebSocket 实时消息、WebRTC 视频/语音通话、中英文切换）",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test-ws.js"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "keywords": [
+    "chat",
+    "websocket",
+    "webrtc",
+    "zero-dependency"
+  ],
+  "license": "MIT",
+  "dependencies": {}
+}

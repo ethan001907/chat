@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>智能聊天</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%AC%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<!-- 登录/注册 -->
+<div id="authView" class="auth-view">
+  <button id="langBtn" class="lang-btn" onclick="toggleLang()">EN</button>
+  <div class="auth-card">
+    <h1 class="logo" data-i18n="appName">智能聊天</h1>
+    <p class="tagline" data-i18n="tagline">不用手机号，注册就能聊</p>
+    <div class="tabs">
+      <button id="tabLogin" class="tab active" data-i18n="tabLogin">登录</button>
+      <button id="tabRegister" class="tab" data-i18n="tabRegister">注册</button>
+    </div>
+
+    <form id="loginForm" class="form">
+      <input id="loginUsername" data-i18n-placeholder="usernamePlaceholder" placeholder="用户名" autocomplete="username" required>
+      <input id="loginPassword" type="password" data-i18n-placeholder="passwordPlaceholder" placeholder="密码" autocomplete="current-password" required>
+      <button type="submit" class="primary" data-i18n="tabLogin">登录</button>
+    </form>
+
+    <form id="registerForm" class="form hidden">
+      <input id="regNickname" data-i18n-placeholder="nicknamePlaceholder" placeholder="昵称（别人看到的名字）" required>
+      <input id="regUsername" data-i18n-placeholder="usernameRegPlaceholder" placeholder="用户名（登录用，字母数字下划线）" required>
+      <input id="regPassword" type="password" data-i18n-placeholder="passwordRegPlaceholder" placeholder="密码（至少6位）" required>
+      <button type="submit" class="primary" data-i18n="tabRegister">注册</button>
+    </form>
+
+    <div id="authError" class="error"></div>
+  </div>
+</div>
+
+<!-- 主界面 -->
+<div id="appView" class="app-view hidden">
+  <aside class="sidebar">
+    <div class="me">
+      <div class="avatar" id="meAvatar"></div>
+      <div>
+        <div class="me-name" id="meName"></div>
+        <div class="me-user" id="meUser"></div>
+      </div>
+      <button id="langBtn2" class="ghost lang-inline" onclick="toggleLang()">EN</button>
+      <button id="settingsBtn" class="ghost" data-i18n-title="settings" title="设置">⚙️</button>
+      <button id="logoutBtn" class="ghost" data-i18n-title="logout" data-i18n="logout" title="退出登录">退出</button>
+    </div>
+
+    <div class="search-box">
+      <input id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="搜索用户（用户名/昵称）">
+      <button id="searchBtn" class="ghost" data-i18n="search">搜</button>
+    </div>
+    <div id="searchResults" class="search-results"></div>
+
+    <div class="section-title" data-i18n="friends">好友</div>
+    <div id="friendList" class="list"></div>
+
+    <div class="section-title">
+      <span data-i18n="groups">群聊</span>
+      <button id="newGroupBtn" class="mini">+</button>
+    </div>
+    <div id="groupList" class="list"></div>
+  </aside>
+
+  <main class="chat">
+    <header class="chat-header">
+      <div id="chatTitle" data-i18n="pickFriend">选择一个好友开始聊天</div>
+      <div class="chat-actions">
+        <button id="voiceCallBtn" class="ghost call-btn hidden" data-i18n-title="voiceCall" title="语音通话">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+        </button>
+        <button id="videoCallBtn" class="ghost call-btn hidden" data-i18n-title="videoCall" title="视频通话">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="6" width="13" height="12" rx="2"/>
+            <path d="M15 10.5l5.5-3.5v10l-5.5-3.5"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+    <div id="messages" class="messages"></div>
+    <form id="composer" class="composer hidden">
+      <button type="button" id="fileBtn" class="ghost file-btn" data-i18n-title="sendFile" title="发送文件">➕</button>
+      <input type="file" id="fileInput" hidden>
+      <input id="msgInput" data-i18n-placeholder="msgPlaceholder" placeholder="输入消息..." autocomplete="off">
+      <button type="submit" class="primary" data-i18n="send">发送</button>
+    </form>
+  </main>
+</div>
+
+<!-- 通话浮层 -->
+<div id="callOverlay" class="call-overlay hidden">
+  <div class="call-panel">
+    <div class="call-info">
+      <div id="callPeerName" data-i18n="calling">通话中</div>
+      <div id="callStatus" class="call-status" data-i18n="connecting">连接中...</div>
+    </div>
+    <video id="remoteVideo" autoplay playsinline></video>
+    <div id="peerMediaBadge" class="peer-media-badge hidden"></div>
+    <video id="localVideo" autoplay playsinline muted></video>
+    <div class="call-buttons">
+      <button id="micBtn" class="ghost" data-i18n-title="muteMic" title="静音">🎤</button>
+      <button id="camBtn" class="ghost" data-i18n-title="toggleCam" title="关摄像头">📷</button>
+      <button id="screenBtn" class="ghost" data-i18n-title="shareScreen" title="共享屏幕">🖥️</button>
+      <button id="hangupBtn" class="danger" data-i18n="hangup">挂断</button>
+    </div>
+  </div>
+</div>
+
+<!-- 来电浮层 -->
+<div id="incomingOverlay" class="call-overlay hidden">
+  <div class="call-panel small">
+    <div class="call-info">
+      <div id="incomingName" data-i18n="incoming">来电</div>
+      <div id="incomingType" class="call-status" data-i18n="videoCall">视频通话</div>
+    </div>
+    <div class="call-buttons">
+      <button id="acceptBtn" class="primary" data-i18n="accept">接听</button>
+      <button id="rejectBtn" class="danger" data-i18n="reject">拒绝</button>
+    </div>
+  </div>
+</div>
+
+<!-- 设置弹窗 -->
+<div id="settingsModal" class="modal hidden">
+  <div class="modal-card">
+    <h3 data-i18n="settings">设置</h3>
+
+    <div class="settings-avatar-row">
+      <div class="avatar avatar-lg" id="settingsAvatar"></div>
+      <div class="settings-avatar-actions">
+        <label class="ghost file-btn"><span data-i18n="uploadAvatar">上传头像</span><input type="file" id="avatarFile" accept="image/*" hidden></label>
+        <button id="avatarRemove" class="ghost" data-i18n="removeAvatar">移除头像</button>
+      </div>
+    </div>
+
+    <div class="settings-field">
+      <label data-i18n="nickname">昵称</label>
+      <div class="row">
+        <input id="setNickname" data-i18n-placeholder="nickname" placeholder="昵称">
+        <button id="saveNickname" class="primary" data-i18n="save">保存</button>
+      </div>
+    </div>
+
+    <div class="settings-field">
+      <label data-i18n="usernameLogin">用户名（登录用）</label>
+      <div class="row">
+        <input id="setUsername" data-i18n-placeholder="usernamePlaceholder" placeholder="用户名">
+        <button id="saveUsername" class="primary" data-i18n="save">保存</button>
+      </div>
+    </div>
+
+    <div class="settings-field">
+      <label data-i18n="changePassword">修改密码</label>
+      <input id="setOldPassword" type="password" data-i18n-placeholder="oldPassword" placeholder="原密码">
+      <input id="setNewPassword" type="password" data-i18n-placeholder="newPassword" placeholder="新密码（至少6位）">
+      <button id="savePassword" class="primary" data-i18n="changePassword">修改密码</button>
+    </div>
+
+    <div id="settingsMsg" class="settings-msg"></div>
+    <div class="modal-buttons">
+      <button id="settingsClose" class="ghost" data-i18n="close">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- 建群弹窗 -->
+<div id="groupModal" class="modal hidden">
+  <div class="modal-card">
+    <h3 data-i18n="createGroup">创建群聊</h3>
+    <input id="groupName" data-i18n-placeholder="groupName" placeholder="群名称">
+    <div class="modal-hint" data-i18n="pickMembers">选择成员：</div>
+    <div id="groupMemberPick" class="member-pick"></div>
+    <div class="modal-buttons">
+      <button id="groupCancel" class="ghost" data-i18n="cancel">取消</button>
+      <button id="groupCreate" class="primary" data-i18n="create">创建</button>
+    </div>
+  </div>
+</div>
+
+<script src="/i18n.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>
