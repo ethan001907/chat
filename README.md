@@ -2,6 +2,12 @@
 
 一个**零依赖**的类微信聊天应用，纯 Node.js + 原生前端，无需任何 npm 包即可运行。
 
+## 使用
+
+访问https://chat.ha-box.xyz
+或者扫描这个二维码：
+<img width="450" height="450" alt="chat ha-box xyz" src="https://github.com/user-attachments/assets/d0cd080a-f428-4d3f-8634-32dcd9e27383" />
+
 ## 功能
 
 - 注册 / 登录（昵称 + 用户名 + 密码，无手机号）
