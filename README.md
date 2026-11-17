@@ -4,7 +4,7 @@
 
 ## 使用
 
-访问https://chat.ha-box.xyz
+访问 https://chat.ha-box.xyz
 或者扫描这个二维码：
 <img width="450" height="450" alt="chat ha-box xyz" src="https://github.com/user-attachments/assets/d0cd080a-f428-4d3f-8634-32dcd9e27383" />
 
